@@ -17,16 +17,16 @@ class SimulationMonitor
 public:
 	// Constructors and destructor
 	~SimulationMonitor();
-	SimulationMonitor(int sim_time,int fist_state_time,bool type);
+	SimulationMonitor(int sim_time,int fist_state_time,bool type,int add_condition);
 	// Setters and getters
 	uint64_t GetTime() const;
 	uint64_t GetStatTime() const { return full_time_ - stat_time_ ;};
 	// Add new process to queue
 	void AddNewProcessAction(uint64_t time, Message* process);
 	// Start simulation
-	void Start();
+	void Start(int sim_nr);
 	// Reset func for next simulation
-	void Reset();
+	void Reset(int sim_nr);
 	// Operate on channel
 	bool TrxCheckChannel() const;
 	void TrxBlockChannel(Message* msg) const;
@@ -48,6 +48,7 @@ private:
 	// Simulation variable
 	const uint64_t full_time_;
 	uint64_t stat_time_;
+	int add_condition_;
 	// Stepping
 	bool stepping_;
 	//-- Vector of process to execute in schedule time
@@ -61,9 +62,9 @@ private:
 	// Function for sorting event by time
 	static bool Comp(Message* lhs, Message* rhs);
 	//Statistic object
-	Statistics statistics_;
+	vector<Statistics*> statistics_;
 	// Seeds
-	vector<double> seeds_;
+	vector<int> seeds_;
 };
 
 #endif//SIMULATIONMONITOR_H_

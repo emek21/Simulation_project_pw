@@ -17,7 +17,7 @@ private:
 	// Static const amount of trx
 	static int const kK=4;
 public:
-	WirelessNetwork(SimulationMonitor* monitor,vector<double> &seed);
+	WirelessNetwork(SimulationMonitor* monitor,vector<int> &seed);
 	~WirelessNetwork() = default;
 	// Check channel status
 	bool IsChannelFree() const;
@@ -25,5 +25,6 @@ public:
 	void BlockChannel(Message* msg);
 	void DetectCollsion(Message* msg);
 	void UnblockChannel(Message* msg);
+	void CalcMaxErrorRate();
 };
 #endif//EVENT_H

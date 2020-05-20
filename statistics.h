@@ -9,6 +9,13 @@ class SimulationMonitor;
 class Message;
 class Statistics
 {
+public:
+	Statistics(SimulationMonitor* m);
+	~Statistics() = default;
+	void CollectData();
+	void ShowData();
+	void EndStat(Statistics* stat);
+	
 private:
 	double avg_packet_error_rate_;
 	double max_packet_error_rate_;
@@ -22,11 +29,6 @@ private:
 	static std::shared_ptr<spdlog::logger> logger_;
 	// Static const amount of trx
 	static int const kK=4;
-public:
-	Statistics(SimulationMonitor* m);
-	~Statistics() = default;
-	void CollectData();
-	void ShowData();
 };
 
 #endif // Statistics_H

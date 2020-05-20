@@ -101,7 +101,7 @@ public:
 	static int GetAmountOfSucces() { return amount_of_succes_; };
 	static int GetErrCounter() { return err_counter_; };
 	static double GetAvgDelay() { return avg_delay_; };
-	static double GetAvgWait() { return avg_delay_; };
+	static double GetAvgWait() { return avg_wait_; };
 	// Stats function
 	static void SetAvgDelay(int time);
 	static void SetAvgWait(int time);

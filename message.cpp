@@ -163,8 +163,8 @@ void Message::SendMsgExec()
 		"\tphase SendMsg(2)\n"
 		,trx_->GetId());
 	// Set statistic wait time
-	avg_wait_ = trx_->GetTime();
-	SetAvgWait(avg_wait_);
+	exit_buffer_time_ = trx_->GetTime()-create_time_;
+	SetAvgWait(exit_buffer_time_);
 	// Block channel by itself (Push to channel's vector)
 	trx_->TrxBlockChannel(this);
 	// Detect first collision possible
@@ -282,6 +282,7 @@ void Message::RetransExec()
 		trx_->ActivateNextProcess();
 		// Inc counter
 		err_counter_++;
+		trx_->SetIncDrop();
 	}
 }
 
@@ -305,19 +306,20 @@ void Message::SetAvgWait(int time)
 
 void Message::ResetStat()
 {
-	amount_of_retr_=0;
-	amount_of_msg_=0;
-	err_counter_=0;
-	amount_of_succes_=0;
+	amount_of_retr_ = 0;
+	amount_of_msg_ = 0;
+	err_counter_ = 0;
+	amount_of_succes_ = 0;
 	avg_wait_ = 0;
-	avg_delay_=0;
+	avg_delay_ = 0;
 }
 
 void Message::CalcSuccesStat()
 {
 	amount_of_retr_ += static_cast<int>(retr_counter_);
 	amount_of_succes_++;
-	send_time_ = trx_->GetTime();
+	trx_->SetIncSend();
+	send_time_ = trx_->GetTime()-create_time_;
 	SetAvgDelay(send_time_);
 }
 

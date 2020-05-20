@@ -6,7 +6,7 @@ Generator::Generator(int const seed):seed_(seed)
 	
 }
 
-const double Generator::lambda = 0.01;
+const double Generator::lambda = 0.001;
 
 double Generator::Rand()
 {

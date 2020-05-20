@@ -16,8 +16,8 @@ using std::uint64_t;
 
 int main()
 {
-	spdlog::set_pattern("*** [%n]->[%^%l%$] ***%v");
-	int type=0,simulation_time=0,start_stat_time=0,logger_type;
+	spdlog::set_pattern("\t*** [%n]->[%^%l%$] ***%v");
+	int type=0,simulation_time=0,start_stat_time=0,logger_type,add_condition;
 	printf("\t--Digital simulation--\n\n"
 		"\tAuthor: Przemyslaw Wasilewicz \t"
 		"Method: M4\n"
@@ -27,15 +27,17 @@ int main()
 	printf("\n\nSelect mode: continuous[0] | step[1]\n"
 	">>");
 	std::cin>>type;
-	printf("Enter the simulation time: \n"
+	printf("\nEnter the simulation time: \n"
 	">>");
 	std::cin>>simulation_time;
-	printf("Enter the length of the initial phase: \n"
+	printf("\nEnter the length of the initial phase: \n"
 	">>");
 	std::cin>>start_stat_time;
-	printf("Select mode: debug[0] | info[1] | warn[2]: \n"
+	printf("\nSelect mode: debug[0] | info[1] | warn[2]: \n"
 	">>");
-	std::cin>>logger_type;
+	std::cin>>logger_type;printf("\nProvide an additional end condition. The number of packets: [0 = off] \n"
+	">>");
+	std::cin>>add_condition;
 	switch (logger_type)
 	{
 	case 0:
@@ -85,12 +87,12 @@ int main()
 	//std::ostream_iterator<double> output_iterator4(output_file4, "\n");
 	//std::copy(hist_rand_zeo_one.begin(), hist_rand_zeo_one.end(), output_iterator4);
 	
-	auto monitor = new SimulationMonitor(simulation_time,start_stat_time,type);
+	auto monitor = new SimulationMonitor(simulation_time,start_stat_time,type,add_condition);
 	
-	for(int i=0 ; i < 1 ; i++)
+	for(int i=0 ; i < 10 ; i++)
 	{
 		printf("The beginning of the simulation #%d...\n",i+1);
-		monitor->Start();
+		monitor->Start(i);
 	}
 	
 	monitor->ShowResult();

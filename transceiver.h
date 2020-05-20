@@ -25,8 +25,9 @@ private:
 	SimulationMonitor* monitor_;
 	
 	//Statistic
-	static int amout_of_send_;
-	static int amout_of_drop_;
+	int amout_of_send_;
+	int amout_of_drop_;
+	static double max_error_rate_;;
 
 	// Generators
 	Generator gen_cgp_;
@@ -39,12 +40,11 @@ private:
     static const int kMinTime = 10;
 public:
 	// Constructor and destructor
-	Transceiver();
 	Transceiver(unsigned k, SimulationMonitor* m,double seed_cgp, double seed_ack,
 		double seed_ctp, double seed_crp);
 	~Transceiver() = default;
 	// Setters and getters
-	int GetId() const;
+	unsigned int GetId() const;
 	bool IsBufferEmpty() const;
 	uint64_t GetTime() const;
 	// Set collision flag in message
@@ -72,6 +72,13 @@ public:
 	// Generate transmission time
 	int GenCtpTime();
 	int GenCrpTime(int ctp, int r);
+	void SetIncSend() {amout_of_send_++;};
+	void SetIncDrop() {amout_of_drop_++;};
+	double GetAvgErrorRate() const ;
+	static void SetMaxErrorRate(const double err) { max_error_rate_=err; };
+	static double GetMaxErrorRate() { return max_error_rate_; };
+	static void ResetStat() { max_error_rate_=0; };
+	
 };
 
 

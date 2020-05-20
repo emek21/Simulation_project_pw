@@ -5,23 +5,19 @@
 #include <math.h>
 
 Transceiver::Transceiver(unsigned k, SimulationMonitor* m,double seed_cgp, double seed_ack,
-		double seed_ctp, double seed_crp) : id_(k),monitor_(m),
+		double seed_ctp, double seed_crp) : id_(k),monitor_(m),amout_of_send_(0),amout_of_drop_(0),
 gen_cgp_(seed_cgp),gen_ack_(seed_ack),gen_ctp_(seed_ctp),gen_crp_(seed_crp)
 {
 	
 }
 
-Transceiver::Transceiver():id_(-1), monitor_(nullptr),
-gen_cgp_(21),gen_ack_(22),gen_ctp_(24),gen_crp_(25)
-{
-	
-}
 const int Transceiver::kP=0.8;
+double Transceiver::max_error_rate_=0;
 
 void Transceiver::GenMsg()
 {
 	// Random time for generate
-	int Cgp = gen_cgp_.RandExp();
+	auto Cgp = gen_cgp_.RandExp();
 	// Generate new message
 	const auto new_msg = new Message(this);
 	new_msg->Activate(round(Cgp));
@@ -78,7 +74,7 @@ void Transceiver::ActivateNextProcess()
 
 int Transceiver::GenCtpTime()
 {
-	return round(gen_ctp_.Rand(kMinTime,kMaxTime));
+	return round(gen_ctp_.Rand(kMinTime,kMaxTime));  
 }
 
 int Transceiver::GenCrpTime(int ctp, int r)
@@ -87,8 +83,13 @@ int Transceiver::GenCrpTime(int ctp, int r)
 	return ctp*Rv;
 }
 
+double Transceiver::GetAvgErrorRate() const 
+{
+	return static_cast<double>(amout_of_drop_)/amout_of_send_;
+}
 
-int Transceiver::GetId() const
+
+unsigned int Transceiver::GetId() const
 {
 	return id_;
 }
