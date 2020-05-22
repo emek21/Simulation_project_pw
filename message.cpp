@@ -38,7 +38,6 @@ bool Message::Retransmission()
 	ter_ = false;
 	// Increment counters
 	retr_counter_++;
-	amount_of_retr_++;
 	// Return that is possible 
 	return retr_counter_<=kLR? true:false;
 }
@@ -273,7 +272,6 @@ void Message::RetransExec()
 		// Go to seccond phase
 		current_phase_ = phase_::check_ch;
 		Activate(trx_->GenCrpTime(ctp_,static_cast<int>(retr_counter_)));
-		amount_of_retr_++;
 		active_ = false;
 	}
 	else 

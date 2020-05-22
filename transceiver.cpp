@@ -31,7 +31,6 @@ void Transceiver::AddToBuffer(Message* msg)
 void Transceiver::RecieveResponse()
 {
 	// Function randomizing that sending message have error or not
-	// Ad-hoc just for exercise 3
 	bool resp = gen_ack_.RandZeroOne(kP);
 	if(resp) msg_buffer_[0]->SetAck();
 	else  msg_buffer_[0]->SetTer();

@@ -45,8 +45,8 @@ private:
 	uint64_t schedule_time_;
 	// Const retransmission limit counter
 	static const int kLR=10;
-	// Const limit counter 2ms=20=40*0.5
-	static int const kMaxWaitTime=40;
+	// Const limit counter 2ms=20=4*0.5
+	static int const kMaxWaitTime=4;
 	// Ack time 1ms
 	static int const kCTIZ = 10;
 	
