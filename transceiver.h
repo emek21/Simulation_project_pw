@@ -1,7 +1,7 @@
 #ifndef Transceiver_H
 #define Transceiver_H
 
-#include<vector>
+#include <vector>
 #include "message.h"
 #include "spdlog/spdlog.h"
 #include "generator.h"
@@ -15,33 +15,10 @@ class Transceiver
 	// This class describes transmitter-receiver 
 	// Generating message, Sending message and receiving message
 	// and storing in buffer
-private:
-	// Id is used for inspection Transceiver's object  in SimulationMonitor's object
-	// or collision detection
-	unsigned id_;
-	// Buffer for message to send
-	vector<Message*> msg_buffer_;
-	// Pointer for access monitor method 
-	SimulationMonitor* monitor_;
-	
-	//Statistic
-	int amout_of_send_;
-	int amout_of_drop_;
-	static double max_error_rate_;;
-
-	// Generators
-	Generator gen_cgp_;
-	Generator gen_ack_;
-	Generator gen_ctp_;
-	Generator gen_crp_;
-	// Static for generator
-	static const int kP;
-    static const int kMaxTime = 100;
-    static const int kMinTime = 10;
 public:
 	// Constructor and destructor
-	Transceiver(unsigned k, SimulationMonitor* m,double seed_cgp, double seed_ack,
-		double seed_ctp, double seed_crp);
+	Transceiver(unsigned k, SimulationMonitor* m,int seed_cgp, int seed_ack,
+		int seed_ctp, int seed_crp);
 	~Transceiver() = default;
 	// Setters and getters
 	unsigned int GetId() const;
@@ -78,7 +55,35 @@ public:
 	static void SetMaxErrorRate(const double err) { max_error_rate_=err; };
 	static double GetMaxErrorRate() { return max_error_rate_; };
 	static void ResetStat() { max_error_rate_=0; };
+
+private:
+	// Id is used for inspection Transceiver's object  in SimulationMonitor's object
+	// or collision detection
+	unsigned id_;
+	// Buffer for message to send
+	vector<Message*> msg_buffer_;
+	// Pointer for access monitor method 
+	SimulationMonitor* monitor_;
 	
+	//Statistic
+	// Amount of all successfully send messages 
+	int amout_of_send_;
+	// Amount of all lost messages 
+	int amout_of_drop_;
+	// Maximum error rate
+	static double max_error_rate_;;
+
+	// Generators
+	Generator gen_cgp_;
+	Generator gen_ack_;
+	Generator gen_ctp_;
+	Generator gen_crp_;
+	// Static for generator
+	// Probability for generator
+	static const double kP;
+	// Range for generator
+    static const int kMaxTime = 100;
+    static const int kMinTime = 10;
 };
 
 

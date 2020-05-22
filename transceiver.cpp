@@ -4,14 +4,14 @@
 #include "generator.h"
 #include <math.h>
 
-Transceiver::Transceiver(unsigned k, SimulationMonitor* m,double seed_cgp, double seed_ack,
-		double seed_ctp, double seed_crp) : id_(k),monitor_(m),amout_of_send_(0),amout_of_drop_(0),
+Transceiver::Transceiver(unsigned k, SimulationMonitor* m,int seed_cgp, int seed_ack,
+		int seed_ctp, int seed_crp) : id_(k),monitor_(m),amout_of_send_(0),amout_of_drop_(0),
 gen_cgp_(seed_cgp),gen_ack_(seed_ack),gen_ctp_(seed_ctp),gen_crp_(seed_crp)
 {
 	
 }
 
-const int Transceiver::kP=0.8;
+const double Transceiver::kP=0.8;
 double Transceiver::max_error_rate_=0;
 
 void Transceiver::GenMsg()
@@ -20,7 +20,7 @@ void Transceiver::GenMsg()
 	auto Cgp = gen_cgp_.RandExp();
 	// Generate new message
 	const auto new_msg = new Message(this);
-	new_msg->Activate(round(Cgp));
+	new_msg->Activate(static_cast<uint64_t>(round(Cgp)));
 }
 
 void Transceiver::AddToBuffer(Message* msg)
@@ -33,7 +33,7 @@ void Transceiver::RecieveResponse()
 	// Function randomizing that sending message have error or not
 	// Ad-hoc just for exercise 3
 	bool resp = gen_ack_.RandZeroOne(kP);
-	if(!resp) msg_buffer_[0]->SetAck();
+	if(resp) msg_buffer_[0]->SetAck();
 	else  msg_buffer_[0]->SetTer();
 }
 
@@ -74,12 +74,13 @@ void Transceiver::ActivateNextProcess()
 
 int Transceiver::GenCtpTime()
 {
-	return round(gen_ctp_.Rand(kMinTime,kMaxTime));  
+	return static_cast<int>(round(gen_ctp_.Rand(kMinTime,kMaxTime)));  
 }
 
 int Transceiver::GenCrpTime(int ctp, int r)
 {
-	int Rv = round(gen_crp_.Rand(0,pow(2,r)-1));
+	// Generate retransmission time 
+	int Rv = static_cast<int>(round(gen_crp_.Rand(0,pow(2,r)-1)));
 	return ctp*Rv;
 }
 

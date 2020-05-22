@@ -8,9 +8,10 @@ SimulationMonitor::~SimulationMonitor()
 }
 
 SimulationMonitor::SimulationMonitor(int sim_time,int fist_state_time,bool type,int add_con):
-total_num_(0),num_of_fail_(0),full_time_(sim_time),stat_time_(fist_state_time),
-stepping_(type),clock_(0),current_(nullptr),add_condition_(add_con)
+full_time_(sim_time),stat_time_(fist_state_time),add_condition_(add_con),
+stepping_(type),clock_(0),current_(nullptr)
 {
+	// Generate seeds
 	GenerateSeeds();
 	// Initialize simulation
 	wireless_network_ = new WirelessNetwork(this,seeds_);
@@ -22,7 +23,7 @@ uint64_t SimulationMonitor::GetTime() const
 	return clock_;
 }
 
-void SimulationMonitor::Start(int sim_nr)
+void SimulationMonitor::Start(const int sim_nr)
 {
 	statistics_.push_back(new Statistics(this));
 	bool stat_flag = false;
@@ -30,18 +31,23 @@ void SimulationMonitor::Start(int sim_nr)
 
 	while(clock_ < full_time_)
 	{
+		// Handle additional end condition only when is stat time 
 		if(stat_flag) 
 		{
 			if(add_condition_ > 0 && add_condition_ <= Message::GetAmountOfSucces()) 
 			{
+				// End
 				break;
 			}
 		}
+		// Handle stat time
 		if(clock_>= stat_time_ && !stat_flag) 
 		{
+			// Reset statistic
 			Message::ResetStat();
 			stat_flag = true;
 		}
+		
 		// Find next planed action and activate process
 		// Check for process in queue
 		if(process_queue_.empty() != true)
@@ -55,8 +61,10 @@ void SimulationMonitor::Start(int sim_nr)
 				DeleteProcess();
 				// execute current
 				current_->Execute();
+				
 				if(current_->IsTerminated())
 				{
+					// Delete if process end life 
 					delete current_;
 				}
 			}
@@ -71,19 +79,25 @@ void SimulationMonitor::Start(int sim_nr)
 			
 		}
 	}
+	// Statistic and reset function
 	Reset(sim_nr);
+	// Showing statistic of this simulation
 	statistics_[sim_nr]->ShowData();
 }
 
 void SimulationMonitor::Reset(int sim_nr)
 {
-	// TODO Divide this function
+	// Calculate statistic and reset simulation
+	// Collect data 
 	wireless_network_->CalcMaxErrorRate();
 	statistics_[sim_nr]->CollectData();
+	// clear clock and current pointer
 	clock_ = 0;
 	current_ = nullptr;
+	// Clear process queue
 	process_queue_.clear();
 	delete wireless_network_;
+	// Create new network
 	wireless_network_ = new WirelessNetwork(this,seeds_);
 }
 
@@ -161,11 +175,14 @@ void SimulationMonitor::GenerateSeeds()
 void SimulationMonitor::ShowResult()
 {
 	auto end_stat = new Statistics(this);
+	int n=0;
 	for(auto stat: statistics_)
 	{
-		end_stat->EndStat(stat);
+		end_stat->AddStat(stat);
 		delete stat;
+		n++;
 	}
+	end_stat->EndStat(n);
 	printf("All simulation average result:\n");
 	end_stat->ShowData();
 }

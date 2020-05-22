@@ -17,7 +17,11 @@ using std::uint64_t;
 int main()
 {
 	spdlog::set_pattern("\t*** [%n]->[%^%l%$] ***%v");
-	int type=0,simulation_time=0,start_stat_time=0,logger_type,add_condition;
+	// Tmp config values 
+	int type=0,simulation_time=0,start_stat_time=0,logger_type=0,add_condition=0;
+	double lambda=0;
+	
+	// User interface. Getting config values
 	printf("\t--Digital simulation--\n\n"
 		"\tAuthor: Przemyslaw Wasilewicz \t"
 		"Method: M4\n"
@@ -33,11 +37,20 @@ int main()
 	printf("\nEnter the length of the initial phase: \n"
 	">>");
 	std::cin>>start_stat_time;
+	printf("\nEnter lambda value:  \n"
+	">>");
+	std::cin>>lambda;
 	printf("\nSelect mode: debug[0] | info[1] | warn[2]: \n"
 	">>");
-	std::cin>>logger_type;printf("\nProvide an additional end condition. The number of packets: [0 = off] \n"
+	std::cin>>logger_type;
+	printf("\nProvide an additional end condition. The number of packets: [0 = off] \n"
 	">>");
 	std::cin>>add_condition;
+
+	// Set simulation values
+	// Set lambda
+	Generator::SetLambda(lambda);
+	// Set log level
 	switch (logger_type)
 	{
 	case 0:
@@ -54,7 +67,7 @@ int main()
 		break;
 	}
 	
-	// --Generate for histograms--
+	// --Generate histograms--
 	//std::vector<double> hist_rand;
 	//std::vector<double> hist_rand_exp;
 	//std::vector<double> hist_rand_minmax;
@@ -86,15 +99,17 @@ int main()
 	//std::ofstream output_file4("./RandZeroOne.txt");
 	//std::ostream_iterator<double> output_iterator4(output_file4, "\n");
 	//std::copy(hist_rand_zeo_one.begin(), hist_rand_zeo_one.end(), output_iterator4);
-	
+
+	// Main simulation object
 	auto monitor = new SimulationMonitor(simulation_time,start_stat_time,type,add_condition);
-	
+
+	// Run 10 simulations
 	for(int i=0 ; i < 10 ; i++)
 	{
 		printf("The beginning of the simulation #%d...\n",i+1);
 		monitor->Start(i);
 	}
-	
+	// Showing average result of all simulations 
 	monitor->ShowResult();
 	delete monitor;
 	

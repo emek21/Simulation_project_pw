@@ -19,9 +19,12 @@ private:
 	// Transmission time
 	int ctp_;
 	// Flags
+	// Get ter or ack
 	bool ack_;
 	bool ter_;
+	// End of process
 	bool terminated_;
+	// Detected collision 
 	bool collision_;
 	bool wait_for_ack_;
 	// Counter for counting channel free time (max 40 = 2ms)
@@ -42,21 +45,30 @@ private:
 	uint64_t schedule_time_;
 	// Const retransmission limit counter
 	static const int kLR=10;
-	// Const limit counter
+	// Const limit counter 2ms=20=40*0.5
 	static int const kMaxWaitTime=40;
 	// Ack time 1ms
 	static int const kCTIZ = 10;
 	
-	// Statistic
+	// Statistic variable
 	uint64_t create_time_;
 	uint64_t send_time_;
 	uint64_t exit_buffer_time_;
+	// Amount of all created messages (debug)
 	static int amount_of_msg_;
+	// Amount of all retransmissions 
 	static int amount_of_retr_;
-	static int amount_of_succes_;
-	static int err_counter_;
+	// Amount of all successfully send messages 
+	static int amount_of_success_;
+	// Amount of all lost messages 
+	static int drop_counter_;
+	// Average delay time
 	static double avg_delay_;
+	// Average wait time
 	static double avg_wait_;
+	// Numbers to calculate average of times
+	static int no_of_wait_msg_;
+	static int no_of_delay_msg_;
 	//logger
 	static std::shared_ptr<spdlog::logger> logger_;
 
@@ -98,13 +110,13 @@ public:
 	//Static getters and setters
 	static int GetAmountOfMsg() { return amount_of_msg_; };
 	static int GetAmountOfRetr() { return amount_of_retr_; };
-	static int GetAmountOfSucces() { return amount_of_succes_; };
-	static int GetErrCounter() { return err_counter_; };
-	static double GetAvgDelay() { return avg_delay_; };
-	static double GetAvgWait() { return avg_wait_; };
+	static int GetAmountOfSucces() { return amount_of_success_; };
+	static int GetErrCounter() { return drop_counter_; };
+	static double GetAvgDelay() { return avg_delay_/no_of_delay_msg_; };
+	static double GetAvgWait() { return avg_wait_/no_of_wait_msg_; };
 	// Stats function
-	static void SetAvgDelay(int time);
-	static void SetAvgWait(int time);
+	static void SetAvgDelay(uint64_t time);
+	static void SetAvgWait(uint64_t time);
 	static void ResetStat();
 	void CalcSuccesStat();
 };

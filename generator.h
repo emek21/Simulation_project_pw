@@ -9,7 +9,7 @@ private:
     static const int kA = 16807;
     static const int kQ = 127773;
     static const int kR = 2836;
-	static const double lambda;
+	static double lambda_;
 	
 	
 public:
@@ -20,9 +20,14 @@ public:
 	double Rand();
 	// Draws between <min,max>
 	double Rand(int min, int max);
+	// Draws exponential values
 	double RandExp();
+	// Draws 0 or 1
 	bool RandZeroOne(double const p);
+	// Return seedsd
 	int GetSeed() const { return static_cast<int>(seed_);};
+	// Setting lambda_ value
+	static void SetLambda(double lmb) { lambda_ = lmb; };
 };
 
 #endif /* GENERATOR_H_ */

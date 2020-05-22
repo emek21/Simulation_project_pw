@@ -25,6 +25,7 @@ public:
 	void BlockChannel(Message* msg);
 	void DetectCollsion(Message* msg);
 	void UnblockChannel(Message* msg);
+	// Find max error rate
 	void CalcMaxErrorRate();
 };
 #endif//EVENT_H

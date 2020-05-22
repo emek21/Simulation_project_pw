@@ -5,6 +5,7 @@ WirelessNetwork::WirelessNetwork(SimulationMonitor* monitor,vector<int> &seed)
 {
 	for(int i=0; i<kK; i++)
 	{
+		// Giving out seeds
 		int seed_cgp = seed.back();
 		seed.pop_back();
 		int seed_ack = seed.back();
@@ -49,10 +50,12 @@ void WirelessNetwork::UnblockChannel(Message* msg)
 
  void WirelessNetwork::CalcMaxErrorRate()
  {
+	// Finding max error rate
 	double max = -1;
 	for(auto x: list_of_transceivers_)
 	{
 		if(x->GetAvgErrorRate() > max) max=x->GetAvgErrorRate();
 	}
+	// Set max error rate
 	Transceiver::SetMaxErrorRate(max);
  }

@@ -6,12 +6,15 @@
 using std::shared_ptr;
 using spdlog::stdout_color_mt;
 
+// Define static values
 int Message::amount_of_retr_ = 0;
 int Message::amount_of_msg_ = 0;
-int Message::amount_of_succes_ = 0;
-int Message::err_counter_ = 0;
+int Message::amount_of_success_ = 0;
+int Message::drop_counter_ = 0;
 double Message::avg_delay_ = 0;
 double Message::avg_wait_ = 0;
+int Message::no_of_wait_msg_ = 0;
+int Message::no_of_delay_msg_ = 0;
 
 Message::Message(Transceiver* trx): trx_(trx),retr_counter_(0),
 ack_(false),ter_(false),terminated_(false),collision_(0),wait_for_ack_(false),
@@ -280,44 +283,46 @@ void Message::RetransExec()
 		active_ = false;
 		DeleteMsg();
 		trx_->ActivateNextProcess();
-		// Inc counter
-		err_counter_++;
+		// Inc lost message counter
+		drop_counter_++;
+		// Inc lost message counter for one trx
 		trx_->SetIncDrop();
 	}
 }
 
-void Message::SetAvgDelay(int time)
+
+void Message::SetAvgDelay(uint64_t time)
 {
-	if(avg_delay_ == 0) avg_delay_=time;
-	else
-	{
-		avg_delay_ = (avg_delay_+static_cast<double>(time))/2;
-	}
+	// Used to calculate the delay time
+	avg_delay_ = avg_delay_+time;
+	no_of_delay_msg_++;
 }
 
-void Message::SetAvgWait(int time)
+void Message::SetAvgWait(uint64_t time)
 {
-	if(avg_wait_ == 0) avg_wait_=time;
-	else
-	{
-		avg_wait_ = (avg_wait_+static_cast<double>(time))/2;
-	}
+	// Used to calculate the wait time
+	avg_wait_ = avg_wait_+time;
+	no_of_wait_msg_++;
 }
 
 void Message::ResetStat()
 {
-	amount_of_retr_ = 0;
+	// Reset statistic values
 	amount_of_msg_ = 0;
-	err_counter_ = 0;
-	amount_of_succes_ = 0;
-	avg_wait_ = 0;
+	amount_of_retr_ = 0;
+	amount_of_success_ = 0;
+	drop_counter_ = 0;
 	avg_delay_ = 0;
+	avg_wait_ = 0;
+	no_of_wait_msg_=0;
+	no_of_delay_msg_=0;
 }
 
 void Message::CalcSuccesStat()
 {
+	// Calculating statistic for sent message
 	amount_of_retr_ += static_cast<int>(retr_counter_);
-	amount_of_succes_++;
+	amount_of_success_++;
 	trx_->SetIncSend();
 	send_time_ = trx_->GetTime()-create_time_;
 	SetAvgDelay(send_time_);

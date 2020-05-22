@@ -10,10 +10,9 @@ using std::vector;
 
 class SimulationMonitor
 {
-	// This class represents simulating environment
-	// Store vector of available Transceiver
-	// Vector of all events
-	// and helps the process in communicating with others
+	// This class represents simulating environment.
+	// Controls the simulation and manages the clock.
+	// Helps process in communicating with others
 public:
 	// Constructors and destructor
 	~SimulationMonitor();
@@ -42,16 +41,16 @@ public:
 	// Statistic function
 	void ShowResult();
 private:
-	// Statistic variable
-	unsigned total_num_;
-	unsigned num_of_fail_;
 	// Simulation variable
+	// Full simulation time
 	const uint64_t full_time_;
-	uint64_t stat_time_;
+	// Time to measure statistics
+	const uint64_t stat_time_;
+	// Additional end condition ( message sent)
 	int add_condition_;
-	// Stepping
+	// Stepping flag
 	bool stepping_;
-	//-- Vector of process to execute in schedule time
+	// Vector of process to execute in schedule time
 	vector<Message*> process_queue_;
 	// Main clock
 	uint64_t clock_;

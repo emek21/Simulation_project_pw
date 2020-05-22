@@ -6,7 +6,7 @@ Generator::Generator(int const seed):seed_(seed)
 	
 }
 
-const double Generator::lambda = 0.001;
+double Generator::lambda_ = 0;
 
 double Generator::Rand()
 {
@@ -21,13 +21,13 @@ double Generator::Rand()
 
 double Generator::Rand(int const min, int const max)
 {
-	return Rand()*(max - min) + min;
+	return Rand()*(static_cast<double>(max) - min) + min;
 }
 
 double Generator::RandExp()
 {
 	auto k = Rand();
-	return -1 * (1.0 / lambda) * log(k);
+	return -1 * (1.0 / lambda_) * log(k);
 }
 
 bool Generator::RandZeroOne(double const p)
