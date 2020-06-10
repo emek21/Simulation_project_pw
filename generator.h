@@ -3,14 +3,6 @@
 
 class Generator
 {
-private:
-	int seed_;
-    const double kM = 2147483647.0;
-    static const int kA = 16807;
-    static const int kQ = 127773;
-    static const int kR = 2836;
-	static double lambda_;
-	
 	
 public:
 	Generator(int seed);
@@ -28,6 +20,14 @@ public:
 	int GetSeed() const { return static_cast<int>(seed_);};
 	// Setting lambda_ value
 	static void SetLambda(double lmb) { lambda_ = lmb; };
+	static double GetLambda() { return lambda_;};
+private:
+	int seed_;
+    const double kM = 2147483647.0;
+    static const int kA = 16807;
+    static const int kQ = 127773;
+    static const int kR = 2836;
+	static double lambda_;
 };
 
 #endif /* GENERATOR_H_ */

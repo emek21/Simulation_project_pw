@@ -34,10 +34,10 @@ int main()
 	printf("\nEnter the simulation time: \n"
 	">>");
 	std::cin>>simulation_time;
-	printf("\nEnter the length of the initial phase: \n"
+	printf("\nEnter the quantity of send message for the initial phase: \n"
 	">>");
 	std::cin>>start_stat_time;
-	printf("\nEnter lambda value:  \n"
+	printf("\nEnter lambda value: [0 = default] \n"
 	">>");
 	std::cin>>lambda;
 	printf("\nSelect mode: debug[0] | info[1] | warn[2]: \n"
@@ -49,7 +49,17 @@ int main()
 
 	// Set simulation values
 	// Set lambda
-	Generator::SetLambda(lambda);
+	// --------Report values -------
+	//if(lambda == 0)
+	//{
+	//	lambda = 0.000423;//0.000423
+	//}
+	//type = 0;
+	//simulation_time = 100000000;
+	//start_stat_time= 15000 ;
+	//logger_type = 1;
+	//add_condition = 50000;
+	//Generator::SetLambda(lambda);
 	// Set log level
 	switch (logger_type)
 	{
@@ -99,16 +109,23 @@ int main()
 	//std::ofstream output_file4("./RandZeroOne.txt");
 	//std::ostream_iterator<double> output_iterator4(output_file4, "\n");
 	//std::copy(hist_rand_zeo_one.begin(), hist_rand_zeo_one.end(), output_iterator4);
-
+	/*double pp = 0.00;*/
+	
 	// Main simulation object
 	auto monitor = new SimulationMonitor(simulation_time,start_stat_time,type,add_condition);
-
+	
 	// Run 10 simulations
 	for(int i=0 ; i < 10 ; i++)
 	{
+		// Report 
+		//lambda = lambda+0.00005;//0.000001
+		//Generator::SetLambda(lambda);
+		/*pp = pp +0.05;
+		Transceiver::SetP(pp);*/
 		printf("The beginning of the simulation #%d...\n",i+1);
 		monitor->Start(i);
 	}
+	
 	// Showing average result of all simulations 
 	monitor->ShowResult();
 	delete monitor;

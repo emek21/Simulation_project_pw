@@ -11,6 +11,7 @@ gen_cgp_(seed_cgp),gen_ack_(seed_ack),gen_ctp_(seed_ctp),gen_crp_(seed_crp)
 	
 }
 
+//const
 const double Transceiver::kP=0.8;
 double Transceiver::max_error_rate_=0;
 
@@ -68,7 +69,10 @@ void Transceiver::ActivateProcess(uint64_t time, Message* process)
 
 void Transceiver::ActivateNextProcess()
 {
-	msg_buffer_[0]->Activate(5);
+	if(!msg_buffer_.empty())
+	{
+		msg_buffer_[0]->Activate(5);
+	}
 }
 
 int Transceiver::GenCtpTime()

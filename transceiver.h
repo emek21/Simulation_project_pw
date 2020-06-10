@@ -55,7 +55,9 @@ public:
 	static void SetMaxErrorRate(const double err) { max_error_rate_=err; };
 	static double GetMaxErrorRate() { return max_error_rate_; };
 	static void ResetStat() { max_error_rate_=0; };
-
+	/*static double GetP() { return kP;};
+	static void SetP(double p) {kP = p;};
+	*/
 private:
 	// Id is used for inspection Transceiver's object  in SimulationMonitor's object
 	// or collision detection
@@ -80,7 +82,7 @@ private:
 	Generator gen_crp_;
 	// Static for generator
 	// Probability for generator
-	static const double kP;
+	const static double kP;
 	// Range for generator
     static const int kMaxTime = 100;
     static const int kMinTime = 10;

@@ -20,6 +20,9 @@ public:
 	void AddStat(Statistics* stat);
 	// Showing average data form all simulation
 	void EndStat(int n);
+	double GetMaxBer() const { return max_packet_error_rate_; };
+	double GetBitRate() const { return bit_rate_; };
+	double GetRetr() const {return avg_retr_;};
 	
 private:
 	// Packet error rate
@@ -43,8 +46,6 @@ private:
 	SimulationMonitor *monitor_;
 	//logger
 	static std::shared_ptr<spdlog::logger> logger_;
-	// Static const amount of trx
-	static int const kK=4;
 };
 
 #endif // Statistics_H

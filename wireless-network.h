@@ -9,13 +9,6 @@ class SimulationMonitor;
 
 class WirelessNetwork
 {
-private:
-	// Channel
-	Channel ch_;
-	// List of all transceivers
-	vector<Transceiver*> list_of_transceivers_;
-	// Static const amount of trx
-	static int const kK=4;
 public:
 	WirelessNetwork(SimulationMonitor* monitor,vector<int> &seed);
 	~WirelessNetwork() = default;
@@ -27,5 +20,13 @@ public:
 	void UnblockChannel(Message* msg);
 	// Find max error rate
 	void CalcMaxErrorRate();
+	
+private:
+	// Channel
+	Channel ch_;
+	// List of all transceivers
+	vector<Transceiver*> list_of_transceivers_;
+	// Static const amount of trx
+	static int const kK=12; // kk = 4 
 };
 #endif//EVENT_H

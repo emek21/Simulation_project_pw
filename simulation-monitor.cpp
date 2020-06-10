@@ -1,6 +1,8 @@
 #include "simulation-monitor.h"
 #include <iostream>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
 
 SimulationMonitor::~SimulationMonitor()
 {
@@ -8,8 +10,8 @@ SimulationMonitor::~SimulationMonitor()
 }
 
 SimulationMonitor::SimulationMonitor(int sim_time,int fist_state_time,bool type,int add_con):
-full_time_(sim_time),stat_time_(fist_state_time),add_condition_(add_con),
-stepping_(type),clock_(0),current_(nullptr)
+full_time_(sim_time),stat_condition_(fist_state_time),stat_time_(0),end_time(0),
+add_condition_(add_con),stepping_(type),clock_(0),current_(nullptr)
 {
 	// Generate seeds
 	GenerateSeeds();
@@ -27,6 +29,10 @@ void SimulationMonitor::Start(const int sim_nr)
 {
 	statistics_.push_back(new Statistics(this));
 	bool stat_flag = false;
+	// Report - initial phase data
+	/*bool report_mode = true;
+	std::vector<std::pair<double,double>> init_phase_vector;
+	int messages_send = 0 ;*/
 	// Main loop
 
 	while(clock_ < full_time_)
@@ -37,14 +43,16 @@ void SimulationMonitor::Start(const int sim_nr)
 			if(add_condition_ > 0 && add_condition_ <= Message::GetAmountOfSucces()) 
 			{
 				// End
+				end_time = clock_;
 				break;
 			}
 		}
 		// Handle stat time
-		if(clock_>= stat_time_ && !stat_flag) 
+		if(Message::GetAmountOfSucces() >= stat_condition_ && !stat_flag) 
 		{
 			// Reset statistic
 			Message::ResetStat();
+			stat_time_ = clock_;
 			stat_flag = true;
 		}
 		
@@ -70,6 +78,13 @@ void SimulationMonitor::Start(const int sim_nr)
 			}
 
 		}
+		// Report - initial phase data
+		//if(messages_send < Message::GetAmountOfSucces())
+		//{
+		//	init_phase_vector.push_back(std::make_pair(Message::GetAmountOfSucces(),
+		//		static_cast<double>(Message::GetAmountOfRetr())/Message::GetAmountOfSucces()));
+		//	messages_send = Message::GetAmountOfSucces();
+		//}
 		// change clock time to next 
 		change_time();
 		// Stepping mode
@@ -79,10 +94,23 @@ void SimulationMonitor::Start(const int sim_nr)
 			
 		}
 	}
+	// Report - initial phase data
+	/*std::ofstream output_file1;
+	output_file1.open("init_phase.txt",std::ofstream::out | std::ofstream::app);
+	output_file1 << "Lambda=" << Generator::GetLambda()<<'\n';
+	for (auto const& x : init_phase_vector) {
+		output_file1 << x.first << ":"<<x.second;
+		output_file1 << '\n';
+	}
+	output_file1.close();*/
 	// Statistic and reset function
+	if(end_time == 0) end_time = full_time_;
 	Reset(sim_nr);
 	// Showing statistic of this simulation
 	statistics_[sim_nr]->ShowData();
+	/*	int stat_t = clock_ - stat_time_;
+	int bit_rate_ = static_cast<double>(Message::GetAmountOfSucces())/stat_t;
+	bit_rate_*=10000;*/
 }
 
 void SimulationMonitor::Reset(int sim_nr)
@@ -99,6 +127,7 @@ void SimulationMonitor::Reset(int sim_nr)
 	delete wireless_network_;
 	// Create new network
 	wireless_network_ = new WirelessNetwork(this,seeds_);
+	end_time = 0;
 }
 
 bool SimulationMonitor::TrxCheckChannel() const
@@ -159,8 +188,8 @@ void SimulationMonitor::DeleteProcess()
 void SimulationMonitor::GenerateSeeds()
 {
 	// Generate seeds
-	int number_of_seeds = 100000*201;
-	int seed_for_seeds = 123;
+	int number_of_seeds = 100000*5000;
+	int seed_for_seeds = 984653;//Reprot --> 984653
 	auto seed_generator = Generator(seed_for_seeds);
 
 	printf("Seed drawing...\n");

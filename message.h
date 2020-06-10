@@ -11,6 +11,51 @@ class Message
 	// This class describes sending message
 	// Stores actual data about message
 	// In simulation method this is a process
+public:
+	// Constructors
+	Message(Transceiver* trx);
+	~Message() = default;
+	// Setters and getters
+	bool GetAck() const;
+	void SetAck();
+	bool GetTer() const;
+	void SetTer();
+	void SetSendTime(uint64_t time);
+	void SetExitBufferTime(uint64_t time);
+	int GetTrxId() const;
+	void SetCollision();
+	uint64_t GetTime() const;
+	void SetScheduleTime(uint64_t time);
+	bool IsTerminated() const;
+	// Functions
+	// used in transmission
+	// Reset flags, inc counter
+	bool Retransmission();
+	// Main process function
+	void Execute();
+	// Plan new process action
+	void Activate(uint64_t time);
+	// Delete message form trx buffer
+	void DeleteMsg();
+	// Execute functions
+	void GenMsgExec();
+	void CheckChExec();
+	void SendMsgExec();
+	void WaitForRespExec();
+	void RetransExec();
+	//Static getters and setters
+	static int GetAmountOfMsg() { return amount_of_msg_; };
+	static int GetAmountOfRetr() { return amount_of_retr_; };
+	static int GetAmountOfSucces() { return amount_of_success_; };
+	static int GetErrCounter() { return drop_counter_; };
+	static double GetAvgDelay() { return avg_delay_/no_of_delay_msg_; };
+	static double GetAvgWait() { return avg_wait_/no_of_wait_msg_; };
+	// Stats function
+	static void SetAvgDelay(uint64_t time);
+	static void SetAvgWait(uint64_t time);
+	static void ResetStat();
+	void CalcSuccesStat();
+	
 private:
 	// Pointer to parent transceiver 
 	Transceiver* trx_;
@@ -44,8 +89,9 @@ private:
 	// Process next execute time
 	uint64_t schedule_time_;
 	// Const retransmission limit counter
-	static const int kLR=10;
-	// Const limit counter 2ms=20=4*0.5
+	// Project kLR = 10
+	static const int kLR=5;
+	// Const limit counter 2ms=20=4*5
 	static int const kMaxWaitTime=4;
 	// Ack time 1ms
 	static int const kCTIZ = 10;
@@ -71,54 +117,6 @@ private:
 	static int no_of_delay_msg_;
 	//logger
 	static std::shared_ptr<spdlog::logger> logger_;
-
-	
-public:
-	// Constructors
-	Message(Transceiver* trx);
-	~Message() = default;
-	// Setters and getters
-	bool GetAck() const;
-	void SetAck();
-	bool GetTer() const;
-	void SetTer();;
-	void SetSendTime(uint64_t time);
-	void SetExitBufferTime(uint64_t time);
-	int GetTrxId() const;
-	void SetCollision();
-	uint64_t GetTime() const;
-	void SetScheduleTime(uint64_t time);
-	bool IsTerminated() const;
-	// Functions
-	// used in transmission
-	// Reset flags, inc counter
-	bool Retransmission();
-	// Main process function
-	void Execute();
-	// Receiving 
-	bool ReceivingAck();
-	// Plan new process action
-	void Activate(uint64_t time);
-	// Delete message form trx buffer
-	void DeleteMsg();
-	// Execute functions
-	void GenMsgExec();
-	void CheckChExec();
-	void SendMsgExec();
-	void WaitForRespExec();
-	void RetransExec();
-	//Static getters and setters
-	static int GetAmountOfMsg() { return amount_of_msg_; };
-	static int GetAmountOfRetr() { return amount_of_retr_; };
-	static int GetAmountOfSucces() { return amount_of_success_; };
-	static int GetErrCounter() { return drop_counter_; };
-	static double GetAvgDelay() { return avg_delay_/no_of_delay_msg_; };
-	static double GetAvgWait() { return avg_wait_/no_of_wait_msg_; };
-	// Stats function
-	static void SetAvgDelay(uint64_t time);
-	static void SetAvgWait(uint64_t time);
-	static void ResetStat();
-	void CalcSuccesStat();
 };
 
 #endif//MESSAGE_H

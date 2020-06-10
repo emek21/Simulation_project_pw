@@ -19,7 +19,7 @@ public:
 	SimulationMonitor(int sim_time,int fist_state_time,bool type,int add_condition);
 	// Setters and getters
 	uint64_t GetTime() const;
-	uint64_t GetStatTime() const { return full_time_ - stat_time_ ;};
+	uint64_t GetStatTime() const { return end_time - stat_time_ ;};
 	// Add new process to queue
 	void AddNewProcessAction(uint64_t time, Message* process);
 	// Start simulation
@@ -45,7 +45,9 @@ private:
 	// Full simulation time
 	const uint64_t full_time_;
 	// Time to measure statistics
-	const uint64_t stat_time_;
+	const uint64_t stat_condition_;
+	uint64_t stat_time_;
+	uint64_t end_time;
 	// Additional end condition ( message sent)
 	int add_condition_;
 	// Stepping flag
