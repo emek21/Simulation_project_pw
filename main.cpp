@@ -47,19 +47,23 @@ int main()
 	">>");
 	std::cin>>add_condition;
 
+	
+	
+	if(lambda == 0)
+	{
+		lambda = 0.000423;//0.000423
+	}
+
+	//// --------Report values -------
+	/*type = 0;
+	simulation_time = 100000000;
+	start_stat_time= 15000 ;
+	logger_type = 1;
+	add_condition = 50000;*/
+
 	// Set simulation values
 	// Set lambda
-	// --------Report values -------
-	//if(lambda == 0)
-	//{
-	//	lambda = 0.000423;//0.000423
-	//}
-	//type = 0;
-	//simulation_time = 100000000;
-	//start_stat_time= 15000 ;
-	//logger_type = 1;
-	//add_condition = 50000;
-	//Generator::SetLambda(lambda);
+	Generator::SetLambda(lambda);
 	// Set log level
 	switch (logger_type)
 	{
